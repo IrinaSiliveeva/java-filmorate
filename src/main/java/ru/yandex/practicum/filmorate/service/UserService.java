@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.exeption.UserServiceConflict;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.userstorage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.userstorage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,10 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Getter
 public class UserService {
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final UserStorage inMemoryUserStorage;
 
     @Autowired
-    public UserService(InMemoryUserStorage inMemoryUserStorage) {
+    public UserService(UserStorage inMemoryUserStorage) {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
@@ -37,11 +37,11 @@ public class UserService {
         if (userId == friendId) {
             throw new UserServiceConflict("Нельзя самого себя добавить в друзья");
         }
-        if (inMemoryUserStorage.getUserById(userId).getFriends().contains(friendId)) {
+        if (inMemoryUserStorage.getById(userId).getFriends().contains(friendId)) {
             throw new UserServiceConflict(String.format("Пользователь с id %s уже в друзьях", friendId));
         }
-        inMemoryUserStorage.getUserById(userId).getFriends().add(friendId);
-        inMemoryUserStorage.getUserById(friendId).getFriends().add(userId);
+        inMemoryUserStorage.getById(userId).getFriends().add(friendId);
+        inMemoryUserStorage.getById(friendId).getFriends().add(userId);
     }
 
     public void deleteFriend(int userId, int friendId) {
@@ -49,11 +49,11 @@ public class UserService {
         if (userId == friendId) {
             throw new UserServiceConflict("Нельзя удалить самого себя из друзей");
         }
-        if (!inMemoryUserStorage.getUserById(userId).getFriends().contains(friendId)) {
+        if (!inMemoryUserStorage.getById(userId).getFriends().contains(friendId)) {
             throw new NotFoundException(String.format("Друга с id %s нет у вас в друзьях", friendId));
         }
-        inMemoryUserStorage.getUserById(userId).getFriends().remove(friendId);
-        inMemoryUserStorage.getUserById(friendId).getFriends().remove(userId);
+        inMemoryUserStorage.getById(userId).getFriends().remove(friendId);
+        inMemoryUserStorage.getById(friendId).getFriends().remove(userId);
     }
 
     public List<User> getFriends(int userId) {
@@ -61,21 +61,21 @@ public class UserService {
             throw new NotFoundException(String.format("Пользователя с id %s не найдено", userId));
         }
         List<User> friendsList = new ArrayList<>();
-        User user = inMemoryUserStorage.getUserById(userId);
+        User user = inMemoryUserStorage.getById(userId);
         for (int friendId : user.getFriends()) {
-            friendsList.add(inMemoryUserStorage.getUserById(friendId));
+            friendsList.add(inMemoryUserStorage.getById(friendId));
         }
         return friendsList;
     }
 
     public List<User> getCommonFriends(int userId, int otherUserId) {
         checkTransmittedId(userId, otherUserId);
-        List<Integer> mutualIdList = inMemoryUserStorage.getUserById(userId).getFriends().stream()
-                .filter(inMemoryUserStorage.getUserById(otherUserId).getFriends()::contains)
+        List<Integer> mutualIdList = inMemoryUserStorage.getById(userId).getFriends().stream()
+                .filter(inMemoryUserStorage.getById(otherUserId).getFriends()::contains)
                 .collect(toList());
         List<User> mutualUserList = new ArrayList<>();
         for (Integer mutualId : mutualIdList) {
-            mutualUserList.add(inMemoryUserStorage.getUserById(mutualId));
+            mutualUserList.add(inMemoryUserStorage.getById(mutualId));
         }
         return mutualUserList;
 

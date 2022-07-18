@@ -20,7 +20,7 @@ public class InMemoryUserStorage implements UserStorage {
         return id++;
     }
 
-    public void validation(User user) {
+    private void validation(User user) {
         if (user.getName().isBlank() || user.getName() == null) {
             user.setName(user.getLogin());
         }
@@ -30,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User createUser(User user) {
+    public User create(User user) {
         user.setId(incrementId());
         validation(user);
         user.setFriends(new HashSet<>());
@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User update(User user) {
         validation(user);
         checkUserId(user.getId());
         if (user.getFriends() == null || user.getFriends().isEmpty()) {
@@ -50,24 +50,24 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getAllUsers() {
+    public Collection<User> getAll() {
         return users.values();
     }
 
     @Override
-    public User getUserById(int userId) {
+    public User getById(int userId) {
         checkUserId(userId);
         return users.get(userId);
     }
 
     @Override
-    public void deleteUser(int userId) {
+    public void delete(int userId) {
         checkUserId(userId);
         users.remove(userId);
     }
 
     @Override
-    public void deleteAllUsers() {
+    public void deleteAll() {
         users.clear();
     }
 

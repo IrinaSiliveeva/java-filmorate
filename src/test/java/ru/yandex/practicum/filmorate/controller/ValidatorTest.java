@@ -23,10 +23,10 @@ public class ValidatorTest {
                 LocalDate.of(1995, 9, 6), new HashSet<>());
         Film film = new Film(1, "Test_Film", "Test", LocalDate.of(2000, 2, 2),
                 190, new HashSet<>());
-        filmStorage.addFilm(film);
-        userStorage.createUser(user);
-        assertEquals(user, userStorage.getUserById(user.getId()));
-        assertEquals(film, filmStorage.getFilmById(film.getId()));
+        filmStorage.add(film);
+        userStorage.create(user);
+        assertEquals(user, userStorage.getById(user.getId()));
+        assertEquals(film, filmStorage.getById(film.getId()));
     }
 
     @Test
@@ -35,24 +35,24 @@ public class ValidatorTest {
                 LocalDate.of(1995, 9, 6), new HashSet<>());
         Film film = new Film(-1, "Test_Film", "Test", LocalDate.of(2000, 2, 2),
                 190, new HashSet<>());
-        userStorage.createUser(user);
-        filmStorage.addFilm(film);
-        assertEquals(1, filmStorage.getFilmById(1).getId());
-        assertEquals(1, userStorage.getUserById(1).getId());
+        userStorage.create(user);
+        filmStorage.add(film);
+        assertEquals(1, filmStorage.getById(1).getId());
+        assertEquals(1, userStorage.getById(1).getId());
     }
 
     @Test
     public void test_03_ShouldValidationWithIncorrectReleaseDateFilm() {
         Film film = new Film(-1, "Test_Film", "Test", LocalDate.of(1000, 2, 2),
                 190, new HashSet<>());
-        assertThrows(ValidationException.class, () -> filmStorage.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmStorage.add(film));
     }
 
     @Test
     public void test_04_ShouldValidationWithEmptyUserName() {
         User user = new User(1, "test@test.ru", "Test_log", "",
                 LocalDate.of(1995, 9, 6), new HashSet<>());
-        userStorage.createUser(user);
+        userStorage.create(user);
         assertEquals(user.getLogin(), user.getName());
     }
 }

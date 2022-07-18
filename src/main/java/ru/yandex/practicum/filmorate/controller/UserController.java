@@ -23,32 +23,32 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        return userService.getInMemoryUserStorage().createUser(user);
+        return userService.getInMemoryUserStorage().create(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        return userService.getInMemoryUserStorage().updateUser(user);
+        return userService.getInMemoryUserStorage().update(user);
     }
 
     @GetMapping
     public Collection<User> getAllUsers() {
-        return userService.getInMemoryUserStorage().getAllUsers();
+        return userService.getInMemoryUserStorage().getAll();
     }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable("userId") int userId) {
-        return userService.getInMemoryUserStorage().getUserById(userId);
+        return userService.getInMemoryUserStorage().getById(userId);
     }
 
     @DeleteMapping
     public void deleteAllUsers() {
-        userService.getInMemoryUserStorage().deleteAllUsers();
+        userService.getInMemoryUserStorage().deleteAll();
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable("userId") int userId) {
-        userService.getInMemoryUserStorage().deleteUser(userId);
+        userService.getInMemoryUserStorage().delete(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")

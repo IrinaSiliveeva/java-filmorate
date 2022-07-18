@@ -23,32 +23,32 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        return filmService.getInMemoryFilmStorage().addFilm(film);
+        return filmService.getInMemoryFilmStorage().add(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmService.getInMemoryFilmStorage().updateFilm(film);
+        return filmService.getInMemoryFilmStorage().update(film);
     }
 
     @GetMapping
     public Collection<Film> getAllFilms() {
-        return filmService.getInMemoryFilmStorage().getAllFilms();
+        return filmService.getInMemoryFilmStorage().getAll();
     }
 
     @GetMapping("/{filmId}")
     public Film getFilmById(@PathVariable("filmId") int filmId) {
-        return filmService.getInMemoryFilmStorage().getFilmById(filmId);
+        return filmService.getInMemoryFilmStorage().getById(filmId);
     }
 
     @DeleteMapping
     public void deleteAllFilms() {
-        filmService.getInMemoryFilmStorage().deleteAllFilms();
+        filmService.getInMemoryFilmStorage().deleteAll();
     }
 
     @DeleteMapping("/{filmId}")
     public void deleteFilmById(@PathVariable("filmId") int filmId) {
-        filmService.getInMemoryFilmStorage().deleteFilm(filmId);
+        filmService.getInMemoryFilmStorage().delete(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
