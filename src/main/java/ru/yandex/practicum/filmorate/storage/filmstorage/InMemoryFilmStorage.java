@@ -7,12 +7,10 @@ import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Component
+@Component("filmInMemory")
 @Getter
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
@@ -74,5 +72,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void deleteAll() {
         films.clear();
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        return getAll().stream()
+                .sorted((p0, p1) -> p1.getLikes().size() - p0.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

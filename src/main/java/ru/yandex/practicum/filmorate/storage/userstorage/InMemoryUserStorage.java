@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-@Component
+@Component("userInMemoryStorage")
 @Getter
 public class InMemoryUserStorage implements UserStorage {
     private int id = 1;
