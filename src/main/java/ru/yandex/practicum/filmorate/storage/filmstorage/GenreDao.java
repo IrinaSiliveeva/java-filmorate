@@ -3,11 +3,13 @@ package ru.yandex.practicum.filmorate.storage.filmstorage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Component
 public class GenreDao {
@@ -44,5 +46,19 @@ public class GenreDao {
     public Collection<Genre> getFilmGenres(int filmId) {
         String sqlQuery = "select g.* from GENRES g, FILM_GENRE fg where g.GENRE_ID = fg.GENRE_ID and fg.FILM_ID = ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
+    }
+
+    public void deleteFilmGenres(int filmId) {
+        String sqlQuery = "delete from FILM_GENRE where FILM_ID = ?";
+        jdbcTemplate.update(sqlQuery, filmId);
+    }
+
+    public void addFilmGenres(Film film) {
+        if (film.getGenres() != null) {
+            String sqlQuery = "insert into FILM_GENRE (FILM_ID, GENRE_ID) values (?, ?)";
+            for (Genre genre : film.getGenres().stream().distinct().collect(Collectors.toList())) {
+                jdbcTemplate.update(sqlQuery, film.getId(), genre.getId());
+            }
+        }
     }
 }

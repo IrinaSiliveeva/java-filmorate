@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.filmstorage.FilmStorage;
@@ -13,12 +12,10 @@ import java.util.List;
 @Service("filmDbService")
 @Getter
 public class FilmServiceDb implements FilmService {
-    private final JdbcTemplate jdbcTemplate;
     private final FilmStorage filmStorage;
     private final LikeDao likeDao;
 
-    public FilmServiceDb(JdbcTemplate jdbcTemplate, @Qualifier("dbFilm") FilmStorage filmStorage, LikeDao likeDao) {
-        this.jdbcTemplate = jdbcTemplate;
+    public FilmServiceDb(@Qualifier("dbFilm") FilmStorage filmStorage, LikeDao likeDao) {
         this.filmStorage = filmStorage;
         this.likeDao = likeDao;
     }

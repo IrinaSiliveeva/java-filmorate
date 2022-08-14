@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.userstorage.FriendsDao;
@@ -14,13 +13,11 @@ import java.util.List;
 @Service("userDbService")
 @Getter
 public class UserServiceDb implements UserService {
-    private final JdbcTemplate jdbcTemplate;
     private final UserStorage userStorage;
     private final FriendsDao friendsDao;
 
     @Autowired
-    public UserServiceDb(JdbcTemplate jdbcTemplate, @Qualifier("userDbStorage") UserStorage userStorage, FriendsDao friendsDao) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserServiceDb(@Qualifier("userDbStorage") UserStorage userStorage, FriendsDao friendsDao) {
         this.userStorage = userStorage;
         this.friendsDao = friendsDao;
     }

@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component("dbFilm")
 public class FilmDao implements FilmStorage {
@@ -56,20 +55,6 @@ public class FilmDao implements FilmStorage {
         }
     }
 
-    private void deleteFilmGenres(int filmId) {
-        String sqlQuery = "delete from FILM_GENRE where FILM_ID = ?";
-        jdbcTemplate.update(sqlQuery, filmId);
-    }
-
-    private void addFilmGenres(Film film) {
-        if (film.getGenres() != null) {
-            String sqlQuery = "insert into FILM_GENRE (FILM_ID, GENRE_ID) values (?, ?)";
-            for (Genre genre : film.getGenres().stream().distinct().collect(Collectors.toList())) {
-                jdbcTemplate.update(sqlQuery, film.getId(), genre.getId());
-            }
-        }
-    }
-
     @Override
     public Film add(Film film) {
         validation(film);
@@ -77,7 +62,7 @@ public class FilmDao implements FilmStorage {
                 .withTableName("films").usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).intValue());
         if (film.getGenres() != null) {
-            addFilmGenres(film);
+            genreDao.addFilmGenres(film);
         }
         return film;
     }
@@ -87,8 +72,8 @@ public class FilmDao implements FilmStorage {
         validation(film);
         checkId(film.getId());
         if (film.getGenres() != null) {
-            deleteFilmGenres(film.getId());
-            addFilmGenres(film);
+            genreDao.deleteFilmGenres(film.getId());
+            genreDao.addFilmGenres(film);
         }
         String sqlQuery = "update FILMS set FILM_TITLE = ?, DESCRIPTION = ?," +
                 " RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?, FILM_RATE = ? where FILM_ID = ?";
