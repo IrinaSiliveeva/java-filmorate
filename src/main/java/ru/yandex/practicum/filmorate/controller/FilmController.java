@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -16,39 +16,38 @@ import java.util.List;
 public class FilmController {
     private final FilmService filmService;
 
-    @Autowired
-    public FilmController(FilmService filmService) {
+    public FilmController(@Qualifier("filmDbService") FilmService filmService) {
         this.filmService = filmService;
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        return filmService.getInMemoryFilmStorage().add(film);
+        return filmService.getFilmStorage().add(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmService.getInMemoryFilmStorage().update(film);
+        return filmService.getFilmStorage().update(film);
     }
 
     @GetMapping
     public Collection<Film> getAllFilms() {
-        return filmService.getInMemoryFilmStorage().getAll();
+        return filmService.getFilmStorage().getAll();
     }
 
     @GetMapping("/{filmId}")
     public Film getFilmById(@PathVariable("filmId") int filmId) {
-        return filmService.getInMemoryFilmStorage().getById(filmId);
+        return filmService.getFilmStorage().getById(filmId);
     }
 
     @DeleteMapping
     public void deleteAllFilms() {
-        filmService.getInMemoryFilmStorage().deleteAll();
+        filmService.getFilmStorage().deleteAll();
     }
 
     @DeleteMapping("/{filmId}")
     public void deleteFilmById(@PathVariable("filmId") int filmId) {
-        filmService.getInMemoryFilmStorage().delete(filmId);
+        filmService.getFilmStorage().delete(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
